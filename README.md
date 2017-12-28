@@ -1,29 +1,22 @@
-G35-MEO-Programs
-================
+Addressable Holiday Lights
+==========================
 
-This is heavily based on sowbug's G35 Ardunino library (https://github.com/sowbug/G35Arduino)
+THIS IS *NOT* FOR GE G35 TYPE LIGHTS!!!
 
-However, as well as being timer based, it has the facility to manually change programs. At least 6 push buttons are required. It features a totally new MEOPrograms.cpp / .h with more imaginative programs from other light projects I've come across including my own original work and modifications.
+This is based on the new lights that showed up in the 2015 time frame with a ~103V V+ / ~100V V- supply and a data bus driven with two transistors. They go by names such as "Home Accents Holiday" (Home Depot), "Holiday Brightness" (Lowe's), and "Philips Pick-a-Color" (Target). The electronics for this are based off of TBJR6's work (https://hackaday.io/project/8933-addressable-christmas-lights-2015). Each board is a little different, but the same two transistors need isolated and connected to the digital outs of the Arduino. Powering the Arduino from the on board power is tricky. As TBJR6 states, it would be best to isolate the digital out pins of the Arduino with a opto-isolator and condition the Vcc+ on the board to protect the Arduino better.
 
-This is preset for an Arduino Mega2560, but could easily be altered for other boards (sowbug has said that one program crashes his low memory board though)
+This is heavily based on MarkEMarkEMark's (https://github.com/MarkEMarkEMark/G35-MEO-Programs) and sowbug's G35 Ardunino library (https://github.com/sowbug/G35Arduino). The idea was that these libraries are so well matured to update the core code that would be transparent to existing G35 programs out there.
 
-Due to my modifications, the programs will no longer work with sowbug's originals, however his are easily modified to allow them to work once again.
+This code is timer based and has the facility to manually change programs. At least 6 push buttons are required. It features a totally new MEOPrograms.cpp / .h with more imaginative programs from other light projects I've come across including my own original work and modifications.
 
-The six buttons should be wired to A0-A10, and perform as follows:
+This is preset for an Arduino Mega2560, but could easily be altered for other boards (sowbug has said that one program crashes his low memory board though). I am working on a ESP8266 additions in the near future to get rid of the horrid 433MHz RF remote.
 
-- A0: Program Up
-- A1: Program Down
-- A2: Variation Up
-- A3: Variation Down
-- A4: (reserved)
-- A5: (reserved)
-- A6: (reserved)
-- A7: (reserved)
-- A8: (reserved)
-- A9: Toggle Random / Fixed
-- A10: Toggle On/Off
+Due to MarkEMarkEMark's modifications, the programs will no longer work with sowbug's originals, however his are easily modified to allow them to work once again.
 
-![Wiring](/MarkEMarkEMark/G35-MEO-Programs/blob/master/Images/MEOG35Lights.jpg?raw=true "G-35 Lights")
+For now, the remote does not work. 
+
+Wiring
+https://hackaday.io/project/8933-addressable-christmas-lights-2015
 
 The programs and variations are, as follows:
 
