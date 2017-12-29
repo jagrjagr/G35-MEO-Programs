@@ -47,6 +47,9 @@ public:
     // Displays known-good patterns. Useful to prevent insanity during hardware
     // debugging.
     void do_test_patterns();
+    
+    // Send the whole RGB array down the string
+    void sendData()
 
 protected:
     virtual uint8_t get_broadcast_bulb()
@@ -59,11 +62,32 @@ private:
     uint8_t physical_light_count_;
     uint8_t bulb_zero_;
     bool is_forward_;
+    
+    // main storage array for colors for one light string. 
+    // make more flexible, later, if we can link more than one string together
+    //  or someone makes a string longer than 25 bulbs
+    color_t bulbRGB[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
+    inline
+    uint8_t return_red(color_t color)
+    {  
+      return (uint_8)(color & 0x000000ff);
+    }
+    inline
+    uint8_t return_green(color_t color);
+    {  
+      return (uint_8)((bulbRGB[i] & 0x0000ff00) >> 8);
+    }
+    inline
+    uint8_t return_blue(color_t color);
+    {  
+      return (uint_8)((bulbRGB[i] & 0x00ff0000) >> 16));
+    }
+    
     enum
     {
-        MAX_INTENSITY = 0xcc,
-        BROADCAST_BULB = 63,
+        MAX_INTENSITY = 0xff,
+        BROADCAST_BULB = 24,
     };
 
     // Initialize lights by giving them each an address. enumerate_forward()
@@ -73,11 +97,12 @@ private:
     void enumerate_forward();
     void enumerate_reverse();
 
-    // Low-level one-wire protocol commands
-    void begin();
-    void one();
-    void zero();
-    void end();
+    // Low-level protocol commands
+    void frame(uint_8 color_value)
+    //void begin();
+    //void one();
+    //void zero();
+    //void end();
 };
 
 #endif  // INCLUDE_MEOG35_STRING_H

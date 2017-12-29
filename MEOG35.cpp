@@ -28,7 +28,7 @@ bool MEOG35::set_color_if_in_range(uint8_t position, uint8_t intensity,
     return true;
 }
 
-// Returns 12-bit color from red, green, and blue components
+// Returns 24-bit color from red, green, and blue components
 color_t MEOG35::color(uint8_t r, uint8_t g, uint8_t b)
 {
     return COLOR(r, g, b);
@@ -36,7 +36,7 @@ color_t MEOG35::color(uint8_t r, uint8_t g, uint8_t b)
 
 color_t MEOG35::color_hue(uint8_t h)
 {
-    switch (h >> 4)
+    switch (h >> 8)
     {
     case 0:
         h -= 0;
@@ -110,7 +110,7 @@ void MEOG35::fill_sequence(uint8_t begin, uint8_t count,
     }
 }
 
-color_t MEOG35::rainbow_color(uint16_t color)
+color_t MEOG35::rainbow_color(color_t color)
 {
     if (color >= RB_COUNT)
     {
@@ -137,7 +137,7 @@ color_t MEOG35::rainbow_color(uint16_t color)
     }
 }
 
-color_t MEOG35::max_color(uint16_t color)
+color_t MEOG35::max_color(color_t color)
 {
     if (color >= 7)
     {

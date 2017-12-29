@@ -24,15 +24,15 @@
 #endif
 #define DELAYEND 40     // should be ~ 30uS long
 
-#define ZERO(x) digitalWrite(x, LOW);           \
-  delayMicroseconds(DELAYSHORT);                \
-  digitalWrite(x, HIGH);                        \
-  delayMicroseconds(DELAYLONG);
+//#define ZERO(x) digitalWrite(x, LOW);           \
+//  delayMicroseconds(DELAYSHORT);                \
+//  digitalWrite(x, HIGH);                        \
+//  delayMicroseconds(DELAYLONG);
 
-#define ONE(x) digitalWrite(x, LOW);            \
-  delayMicroseconds(DELAYLONG);                 \
-  digitalWrite(x, HIGH);                        \
-  delayMicroseconds(DELAYSHORT);
+//#define ONE(x) digitalWrite(x, LOW);            \
+//  delayMicroseconds(DELAYLONG);                 \
+//  digitalWrite(x, HIGH);                        \
+//  delayMicroseconds(DELAYSHORT);
 
 MEOG35String::MEOG35String(uint8_t pin, uint8_t light_count,
                            uint8_t physical_light_count,
@@ -55,243 +55,25 @@ MEOG35String::MEOG35String(uint8_t pin, uint8_t light_count)
 void MEOG35String::set_color(uint8_t bulb, uint8_t intensity, color_t color)
 {
     bulb += bulb_zero_;
-    uint8_t r, g, b;
-    r = color & 0x0F;
-    g = (color >> 4) & 0x0F;
-    b = (color >> 8) & 0x0F;
 
     if (intensity > MAX_INTENSITY)
     {
         intensity = MAX_INTENSITY;
     }
+    
+    // "unpack" color to apply intensity, then "repack" into the 32 bit color
+    uint8_t r, g, b;
+    r = (color & 0xff) * (intensity / MAX_INTENSITY);
+    g = ((color >> 8) & 0xff) * (intensity / MAX_INTENSITY);
+    b = ((color >> 16) & 0xff) * (intensity / MAX_INTENSITY);
+    
+    color = (0x00ff0000 & ((uint32_t)b << 16)) | (0x0000ff00 & ((uint32_t)g << 8)) | (0x000000ff & (uint32_t)r);
 
-    noInterrupts();
+    //noInterrupts();
 
-    digitalWrite(pin_, HIGH);
-    delayMicroseconds(DELAYSHORT);
-
-    // LED Address
-    if (bulb & 0x20)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (bulb & 0x10)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (bulb & 0x08)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (bulb & 0x04)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (bulb & 0x02)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (bulb & 0x01)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-
-    // Brightness
-    if (intensity & 0x80)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (intensity & 0x40)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (intensity & 0x20)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (intensity & 0x10)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (intensity & 0x08)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (intensity & 0x04)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (intensity & 0x02)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (intensity & 0x01)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-
-    // Blue
-    if (b & 0x8)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (b & 0x4)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (b & 0x2)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (b & 0x1)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-
-    // Green
-    if (g & 0x8)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (g & 0x4)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (g & 0x2)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (g & 0x1)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-
-    // Red
-    if (r & 0x8)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (r & 0x4)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (r & 0x2)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-    if (r & 0x1)
-    {
-        ONE(pin_);
-    }
-    else
-    {
-        ZERO(pin_);
-    }
-
-    digitalWrite(pin_, LOW);
-    delayMicroseconds(DELAYEND);
-
-    interrupts();
+    bulbRGB[bulb] = color;
+    
+    //interrupts();
 }
 
 void MEOG35String::enumerate()
@@ -355,3 +137,51 @@ void MEOG35String::do_test_patterns()
 
     fill_color(0, light_count_, MAX_INTENSITY, COLOR_BLACK);
 }
+
+void MEOG35String::frame(uint_8 color_value)
+{
+
+  uint_8 temp = 0;
+  for(int i=7; i>=0; i--)
+  {
+    temp= color_value & (1 << i); //change this to and with counter bitshifts
+    temp >>= i; //use counter to reshift
+    temp *= 3;
+    
+    // send data on PORTB
+    PORTB=temp;
+    
+    // pause 3us
+    delayMicroseconds(3);
+    
+    // Set PORTB high for meeting the spec
+    PORTB=1;
+    
+    // delay 8us
+    delayMicroseconds(8);
+  }
+}
+
+void MEOG35String::sendData()
+{
+  // for each light in the string, send the current array of colors stored.
+  //   NEED TO CONFIRM - do we really need to send the whole array every time?
+  for(int i=24; i>=0; i--)
+  {
+    // send BLUE
+    frame(return_blue(bulbRGB[i]));
+    //frame((uint_8)((bulbRGB[i] & 0x00ff0000) >> 16)));
+    delayMicroseconds(16);
+    // send GREEN
+    frame(return_green(bulbRGB[i]));
+    //frame((uint_8)((bulbRGB[i] & 0x0000ff00) >> 8));
+    delayMicroseconds(16);
+    // send RED
+    frame(return_red(bulbRGB[i]));
+    // frame((uint_8)(bulbRGB[i] & 0x000000ff));
+    delayMicroseconds(16);
+    
+  }
+
+
+

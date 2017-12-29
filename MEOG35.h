@@ -12,12 +12,12 @@
 
 #include <Arduino.h>
 
-#define color_t uint16_t
-#define CHANNEL_MAX           (0xF)   // Each color channel is 4-bit
-#define HUE_MAX               ((CHANNEL_MAX + 1) * 6 - 1)
+#define color_t uint32_t      // colors are stored in 24 bits of 32 bit int as B G R
+#define CHANNEL_MAX           (0xff)   // Each color channel is 8-bit
+//#define HUE_MAX               ((CHANNEL_MAX + 1) * 6 - 1)
 
-// Color is 12-bit (4-bit each R, G, B)
-#define COLOR(r, g, b)          ((r) + ((g) << 4) + ((b) << 8))
+// Color is 24-bit (8-bit each R, G, B)
+#define COLOR(r, g, b)        ((r) + ((g) << 8) + ((b) << 16))
 #define COLOR_WHITE           COLOR(CHANNEL_MAX, CHANNEL_MAX, CHANNEL_MAX)
 #define COLOR_BLACK           COLOR(0, 0, 0)
 #define COLOR_RED             COLOR(CHANNEL_MAX, 0, 0)
@@ -26,12 +26,12 @@
 #define COLOR_CYAN            COLOR(0,CHANNEL_MAX, CHANNEL_MAX)
 #define COLOR_MAGENTA         COLOR(CHANNEL_MAX, 0,CHANNEL_MAX)
 #define COLOR_YELLOW          COLOR(CHANNEL_MAX,CHANNEL_MAX, 0)
-#define COLOR_PURPLE          COLOR(0xa, 0x3, 0xd)
-#define COLOR_ORANGE          COLOR(0xf, 0x1, 0x0)
-#define COLOR_PALE_ORANGE     COLOR(0x8, 0x1, 0x0)
-#define COLOR_WARMWHITE       COLOR(0xf, 0x7, 0x2)
-#define COLOR_INDIGO          COLOR(0x6, 0, 0xf)
-#define COLOR_VIOLET          COLOR(0x8, 0, 0xf)
+#define COLOR_PURPLE          COLOR(0xaa, 0x33, 0xdd)
+#define COLOR_ORANGE          COLOR(0xff, 0x11, 0x00)
+#define COLOR_PALE_ORANGE     COLOR(0x88, 0x11, 0x00)
+#define COLOR_WARMWHITE       COLOR(0xff, 0x77, 0x22)
+#define COLOR_INDIGO          COLOR(0x66, 0x00, 0xff)
+#define COLOR_VIOLET          COLOR(0x88, 0x00, 0xff)
 
 // G35 is an abstract class representing a string of G35 lights of arbitrary
 // length. LightPrograms talk to this interface.
@@ -45,7 +45,7 @@ public:
         // This is an abstraction leak. The choice was either to define a scaling
         // function that mapped [0..255] to [0..0xcc], or just to leak a hardware
         // detail through to this interface. We chose pragmatism.
-        MAX_INTENSITY = 0xcc
+        MAX_INTENSITY = 0xff
     };
 
     enum
@@ -95,11 +95,11 @@ public:
     // Returns primary hue colors
     static color_t color_hue(uint8_t h);
 
-    static color_t rainbow_color(uint16_t color);
+    static color_t rainbow_color(color_t color);
 
     // Given an int value, returns a "max" color (one with R/G/B each set to
     // 0 or 255, except for black). The mapping is arbitary but deterministic.
-    static color_t max_color(uint16_t color);
+    static color_t max_color(color_t color);
 
     // Make all LEDs the same color starting at specified beginning LED
     virtual void fill_color(uint8_t begin, uint8_t count, uint8_t intensity,
